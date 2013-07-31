@@ -1,0 +1,1 @@
+Script to format The Atlantic's "In Focus" galleries to be watched on a TV Screen.
