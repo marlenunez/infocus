@@ -1,103 +1,126 @@
-//v.1.04 Marleny Nunez
-/*
-First try at putting infocus in the big screen
+// infocus.js
+// 2013-07-31
 
-To be run from the browser javascript console.
-1. Open the Infocus gallery.
-2. Run this code from the console.
-*/
+// Copyright (c) 2013 Marleny Nunez (www.marlenynunez.com)
 
-var s = "";
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 
-//Las fotos de 1280
-var imgs = $('.if1280 .ifImg');
-var total_fotos = imgs.length;
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 
-//Los captions de las fotos de 1280
-var captions = $('.if1280 .imgCap');
+// The Software shall be used for Good, not Evil.
 
-//Otras variables
-var current_img;
-var current_cap;
-var k = 0;
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
-//Eliminar unos cuantos elementos no deseados
-$('div.dek script').remove();
-$('.if1280 .imgCap a, .if1280 .imgCap span').remove();
+// First try at putting infocus in the big screen.
 
-s += '<html>\n';
-s += '<head>\n';
-s += '<title>' + document.title + '</title>\n';
-s += '<style type="text/css">\n';
-s += 'body { background: #282828; color: #FFEEAA; font-family: helvetica,arial; font-size: 36px; font-weight: bold;}\n';
-s += 'h2 { font-size: 18px; margin: 0; padding: 30px; position: absolute; right: 0; bottom: 0; text-shadow: 2px 2px 3px #000000; opacity: 0.1;}\n';
-s += '#container { width: 1200px; margin: 0 auto;}\n';
-s += 'h1, div.date, p.intro { font-size: 32px; line-height: 42px; padding: 0 30px;}\n';
-s += 'p.intro { color: #f6f6f6;}\n';
-s += 'p.caption { top: 0; display: block; margin: 0; padding: 30px; position: absolute; text-shadow: 2px 2px 3px #000000;}\n';
-s += 'p.caption:hover { opacity: 1; transition-property: opacity; transition-duration: 1s;}\n';
-s += 'h2:hover { opacity: 1; transition-property: opacity; transition-duration: 1s;}\n';
-s += 'nobr { font-size: 14px; color: #f6f6f6; font-style: italic; text-shadow: none; }\n';
-s += '</style>\n';
-s += '</head>\n';
-s += '<body>\n';
+// To be run from the browser javascript console.
+// 1. Open the Infocus gallery.
+// 2. Run this code from the console.
 
-s += '<div id="container">\n';
-s += '<div id="items">\n';
+var MN_infocus = (function () {
+    'use strict';
 
-//Extraemos el titulo
-s += '<div class="item">\n';
-s += '<h1>' + $('h1').html() + '</h1>\n';
+  var html_code = "",
 
-//Extraemos la fecha
-s += '<div class="date">' + $('div.toolsTop span.date').text().replace(' | ', '') + '</div>\n';
+      gallery_images = $('.if1280 .ifImg'),
+      gallery_captions = $('.if1280 .imgCap'),
+      total_images = gallery_images.length,
+      current_image,
+      current_caption,
+      i,
+      j,
+      k = 0;
 
-//Extraemos el texto introductorio, borrando los span y anchors de la copia
-//s += '<p>' + $('div.dek p').clone().children().remove().end().text() + '</p>\n\n';
-s += '<p class="intro">' + $('div.dek p').text() + '</p>' + '\n\n';
-s += '</div>\n';
+// Remove a few unwanted elements
+  $('div.dek script, .if1280 .imgCap a, .if1280 .imgCap span').remove();
 
-for (var i = 0, j = imgs.length; i < j; i++) {
-  current_img = imgs[i];
-  current_cap = captions[i];
+// Create the new html code for the gallery
+  html_code += '<html>\n';
+  html_code += '<head>\n';
+  html_code += '<title>' + document.title + '</title>\n';
+  html_code += '<style type="text/css">\n';
+  html_code += 'body { background: #282828; color: #FFEEAA; font-family: helvetica,arial; font-size: 36px; font-weight: bold;}\n';
+  html_code += 'h2 { font-size: 18px; margin: 0; padding: 30px; position: absolute; right: 0; bottom: 0; text-shadow: 2px 2px 3px #000000; opacity: 0.1;}\n';
+  html_code += '#container { width: 1200px; margin: 0 auto;}\n';
+  html_code += 'h1, div.date, p.intro { font-size: 32px; line-height: 42px; padding: 0 30px;}\n';
+  html_code += 'p.intro { color: #f6f6f6;}\n';
+  html_code += 'p.caption { top: 0; display: block; margin: 0; padding: 30px; position: absolute; text-shadow: 2px 2px 3px #000000;}\n';
+  html_code += 'p.caption:hover { opacity: 1; transition-property: opacity; transition-duration: 1s;}\n';
+  html_code += 'h2:hover { opacity: 1; transition-property: opacity; transition-duration: 1s;}\n';
+  html_code += 'nobr { font-size: 14px; color: #f6f6f6; font-style: italic; text-shadow: none; }\n';
+  html_code += '</style>\n';
+  html_code += '</head>\n';
+  html_code += '<body>\n';
 
-    if(current_img.width < 1280 && current_img.width > 1024){
-        k++;
-        s += '<div class="item">\n';
-        s += '<h2>Photo ' + k + ' of ' + total_fotos + '</h2>\n';
-        s += '<div class="photo">';
-        s += '<img src="' + current_img.src + '" width="' + current_img.width + '" height="' + current_img.height + '" alt="" />';
-        s += '</div>\n';
-        s += '<p class="caption">' + $(current_cap).html() + '</p>\n</div>' + '\n\n';
-    }
-}
+  html_code += '<div id="container">\n';
+  html_code += '<div id="items">\n';
 
-s += '</div>\n';
-s += '</div>\n';
+// Extract the gallery title
+  html_code += '<div class="item">\n';
+  html_code += '<h1>' + $('h1').html() + '</h1>\n';
 
-s += '</body>\n';
-s += '</html>\n';
+// Extract the gallery date
+  html_code += '<div class="date">' + $('div.toolsTop span.date').text().replace(' | ', '') + '</div>\n';
 
-//console.log(s);
-//Insertamos el HTML
-document.open;
-document.write(s);
-document.close;
+// Extract the gallery introduction text, without the span and anchor tags
+  html_code += '<p class="intro">' + $('div.dek p').text() + '</p>' + '\n\n';
+  html_code += '</div>\n';
 
-//Cargamos jQuery y el jQuery Cycle plugin
-var script = document.createElement("script");
-  script.setAttribute("src", "http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js");
-  script.addEventListener('load', function() {
-    var script = document.createElement("script");
+// Extract every photo and its caption
+  for (i = 0, j = gallery_images.length; i < j; i++) {
+    current_image = gallery_images[i];
+    current_caption = gallery_captions[i];
+
+      if(current_image.width < 1280 && current_image.width > 1024){
+          k++;
+          html_code += '<div class="item">\n';
+          html_code += '<h2>Photo ' + k + ' of ' + total_images + '</h2>\n';
+          html_code += '<div class="photo">';
+          html_code += '<img src="' + current_image.src + '" width="' + current_image.width + '" height="' + current_image.height + '" alt="" />';
+          html_code += '</div>\n';
+          html_code += '<p class="caption">' + $(current_caption).html() + '</p>\n</div>' + '\n\n';
+      }
+  }
+
+  html_code += '</div>\n';
+  html_code += '</div>\n';
+
+  html_code += '</body>\n';
+  html_code += '</html>\n';
+
+// Write the new html gallery code
+  document.open;
+  document.write(html_code);
+  document.close;
+
+// Load the jQuery library and the jQuery Cycle plugin
+  var script = document.createElement("script");
+    script.setAttribute("src", "http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js");
+    script.addEventListener('load', function() {
+      var script = document.createElement("script");
+      document.body.appendChild(script);
+    }, false);
     document.body.appendChild(script);
-  }, false);
-  document.body.appendChild(script);
 
-var script2 = document.createElement("script");
-  script2.setAttribute("src", "http://www.marlenynunez.com/files/infocus/jquery.cycle.all.js");
-  script2.addEventListener('load', function() {
-    var script2 = document.createElement("script");
+  var script2 = document.createElement("script");
+    script2.setAttribute("src", "http://www.marlenynunez.com/files/infocus/jquery.cycle.all.js");
+    script2.addEventListener('load', function() {
+      var script2 = document.createElement("script");
+      document.body.appendChild(script2);
+      $('#items').cycle({ fx: 'scrollUp', timeout: 6000, delay:  -2000, fit: true, height: 700, width: 1200 });
+    }, false);
     document.body.appendChild(script2);
-    $('#items').cycle({ fx: 'scrollUp', timeout: 6000, delay:  -2000, fit: true, height: 700, width: 1200 });
-  }, false);
-  document.body.appendChild(script2);
+
+}());
