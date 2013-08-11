@@ -25,9 +25,10 @@
 
 // First try at putting infocus in the big screen.
 
-// To be run from the browser javascript console.
-// 1. Open the Infocus gallery.
-// 2. Run this code from the console.
+// This code is meant to be run from the browser javascript console.
+// 1. Open any In Focus gallery web page from The Atlantic.
+// 2. Paste and Run this code from your browser's javascript console.
+// The web page will be transformed into a slideshow suitable for 720p viewing on a TV.
 
 var MN_infocus = (function () {
     'use strict';
